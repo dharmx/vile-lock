@@ -563,6 +563,8 @@ static void input_done(void) {
     if (pam_authenticate(pam_handle, 0) == PAM_SUCCESS) {
         DEBUG("successfully authenticated\n");
         clear_password_memory();
+        /** close eww lock widget */
+        system("locklauncher");
 
         /* PAM credentials should be refreshed, this will for example update any kerberos tickets.
          * Related to credentials pam_end() needs to be called to cleanup any temporary
