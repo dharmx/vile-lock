@@ -134,8 +134,8 @@ int layout_align = 0;
 int modif_align = 0;
 int greeter_align = 0;
 
-char time_format[64] = "%H:%M:%S\0";
-char date_format[64] = "%A, %m %Y\0";
+char time_format[32] = "%H:%M:%S\0";
+char date_format[32] = "%A, %m %Y\0";
 
 char verif_font[64] = "sans-serif\0";
 char wrong_font[64] = "sans-serif\0";
