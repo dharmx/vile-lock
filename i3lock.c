@@ -263,6 +263,24 @@ bool pass_screen_keys = false;
 bool pass_power_keys = false;
 bool pass_volume_keys = false;
 
+bool hotkeys = false;
+char* cmd_brightness_up = NULL;
+char* cmd_brightness_down = NULL;
+
+char* cmd_media_play = NULL;
+char* cmd_media_pause = NULL;
+char* cmd_media_stop = NULL;
+char* cmd_media_next = NULL;
+char* cmd_media_prev = NULL;
+
+char* cmd_audio_mute = NULL;
+char* cmd_volume_up = NULL;
+char* cmd_volume_down = NULL;
+
+char* cmd_power_down = NULL;
+char* cmd_power_off = NULL;
+char* cmd_power_sleep = NULL;
+
 // for the rendering thread, so we can clean it up
 pthread_t draw_thread;
 // main thread still sometimes calls redraw()
@@ -704,6 +722,90 @@ static void handle_key_press(xcb_key_press_event_t *event) {
 #else
     n = xkb_keysym_to_utf8(ksym, buffer, sizeof(buffer));
 #endif
+
+    //custom key commands
+    if (hotkeys) {
+        switch(ksym) {
+            case XKB_KEY_XF86MonBrightnessUp:
+                if (cmd_brightness_up) {
+                    system(cmd_brightness_up);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86MonBrightnessDown:
+                if (cmd_brightness_down) {
+                    system(cmd_brightness_down);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioPlay:
+                if (cmd_media_play) {
+                    system(cmd_media_play);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioPause:
+                if (cmd_media_pause) {
+                    system(cmd_media_pause);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioStop:
+                if (cmd_media_stop) {
+                    system(cmd_media_stop);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioPrev:
+                if (cmd_media_prev) {
+                    system(cmd_media_prev);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioNext:
+                if (cmd_media_next) {
+                    system(cmd_media_next);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioMute:
+                if (cmd_audio_mute) {
+                    system(cmd_audio_mute);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioLowerVolume:
+                if (cmd_volume_down) {
+                    system(cmd_volume_down);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86AudioRaiseVolume:
+                if (cmd_volume_up) {
+                    system(cmd_volume_up);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86PowerDown:
+                if (cmd_power_down) {
+                    system(cmd_power_down);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86PowerOff:
+                if (cmd_power_off) {
+                    system(cmd_power_off);
+                    return;
+                }
+                break;
+            case XKB_KEY_XF86Sleep:
+                if (cmd_power_sleep) {
+                    system(cmd_power_sleep);
+                    return;
+                }
+                break;
+        }
+    }
 
     // media keys
     if (pass_media_keys) {
@@ -1560,6 +1662,25 @@ int main(int argc, char *argv[]) {
         {"pass-power-keys", no_argument, NULL, 603},
         {"pass-volume-keys", no_argument, NULL, 604},
 
+        // custom commands for pass keys
+        {"custom-key-commands", no_argument, NULL, 610},
+        {"cmd-brightness-up", required_argument, NULL, 620},
+        {"cmd-brightness-down", required_argument, NULL, 621},
+
+        {"cmd-media-play", required_argument, NULL, 630},
+        {"cmd-media-pause", required_argument, NULL, 631},
+        {"cmd-media-stop", required_argument, NULL, 632},
+        {"cmd-media-next", required_argument, NULL, 633},
+        {"cmd-media-prev", required_argument, NULL, 634},
+
+        {"cmd-audio-mute", required_argument, NULL, 640},
+        {"cmd-volume-up", required_argument, NULL, 641},
+        {"cmd-volume-down", required_argument, NULL, 642},
+
+        {"cmd-power-down", required_argument, NULL, 650},
+        {"cmd-power-off", required_argument, NULL, 651},
+        {"cmd-power-sleep", required_argument, NULL, 652},
+
         // bar indicator stuff
         {"bar-indicator", no_argument, NULL, 700},
         {"bar-direction", required_argument, NULL, 701},
@@ -2120,6 +2241,53 @@ int main(int argc, char *argv[]) {
 			case 604:
 				pass_volume_keys = true;
 				break;
+
+            //custom key commands
+            case 610:
+                hotkeys = true;
+                break;
+            case 620:
+                cmd_brightness_up = optarg;
+                break;
+            case 621:
+                cmd_brightness_down = optarg;
+                break;
+
+            case 630:
+                cmd_media_play = optarg;
+                break;
+            case 631:
+                cmd_media_pause = optarg;
+                break;
+            case 632:
+                cmd_media_stop = optarg;
+                break;
+            case 633:
+                cmd_media_next = optarg;
+                break;
+            case 634:
+                cmd_media_prev = optarg;
+                break;
+
+            case 640:
+                cmd_audio_mute = optarg;
+                break;
+            case 641:
+                cmd_volume_up = optarg;
+                break;
+            case 642:
+                cmd_volume_down = optarg;
+                break;
+
+            case 650:
+                cmd_power_down = optarg;
+                break;
+            case 651:
+                cmd_power_off = optarg;
+                break;
+            case 652:
+                cmd_power_sleep = optarg;
+                break;
 
 			// Bar indicator
             case 700:
